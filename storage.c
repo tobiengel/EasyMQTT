@@ -86,7 +86,8 @@ standard_retval initStorage(){
     #endif
 
    listFiles();
-   EnsureConfig();
+//   EnsureConfig();
+   createDefaultConfig();
 
 
     //ensure channel config is correct

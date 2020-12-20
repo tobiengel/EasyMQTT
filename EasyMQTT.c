@@ -48,7 +48,7 @@ PROCESS_THREAD(easymqtt_process, ev, data) {
 
     PROCESS_BEGIN();
 
-    usleep(5000);       //wait for flash to become ready
+    //sleep(2);       //wait for flash to become ready
     initStorage();
     initMQTT(&easymqtt_process, &ReceiveData); //initialize MQTT and pass callback to handle received data
 
