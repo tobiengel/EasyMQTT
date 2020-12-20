@@ -32,8 +32,8 @@ void listFiles(){
 standard_retval createDefaultConfig(){
 
     sprintf(NonVolatileConfig.channelBase, "default/%%s");
-    NonVolatileConfig.datasendInterval = 600;
-    NonVolatileConfig.batterySendInterval = 3600;
+    NonVolatileConfig.datasendInterval = configDataSendInterval;
+    NonVolatileConfig.batterySendInterval = configBatInterval;
 
     return CALL_OK;
 }

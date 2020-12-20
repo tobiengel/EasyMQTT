@@ -10,6 +10,9 @@
 
 
 #define configDataFile "config"
+#define configBatInterval 30
+#define configDataSendInterval 30
+
 
 typedef struct {
     char channelBase[32];
