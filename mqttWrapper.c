@@ -19,10 +19,11 @@
 #include "mqttWrapper.h"
 #include "storage.h"     //needs to be aware of the config structure
 #include "mqttConfig.h"             //default defines
+#include "CommandHandler.h"     //handles received commands
 
 #include <os/sys/log.h>
 #define LOG_LEVEL LOG_LEVEL_DBG
-#define LOG_MODULE "MQTTImplementation"
+#define LOG_MODULE "mqttWrapper"
 
 /* Parent RSSI functionality */
 static int def_rt_rssi = 0;
@@ -56,6 +57,70 @@ extern struct etimer resetLED_timer;
 struct etimer publish_periodic_timer;
 
 char client_id[BUFFER_SIZE];
+
+standard_retval handleLocateCmd(char* t, char* d){
+
+    etimer_set(&resetLED_timer, (CLOCK_SECOND * 5));    //handle the LED ourselves
+    leds_on(LEDS_RED);                                  //use the red LED for locate
+    return CALL_FAILED;                                 //prevent blue confirmation LED
+}
+
+standard_retval handleIntervalCmd(char* t, char* d){
+
+    char* num = (char*)(data+9);
+    uint8_t len = strlen((char*)(data+9));
+
+    if(len > 0 ){
+        NonVolatileConfig.datasendInterval = atoi(num);
+        uint8_t r = syncConfig();
+        return r;
+    }
+    return CALL_FAILED;
+}
+
+standard_retval handleBatIntCmd(char* t, char* d){
+
+    char* num = (char*)(d+7);
+    uint8_t len = strlen((char*)(d+7));
+    if(len > 0 ){
+
+        NonVolatileConfig.batterySendInterval = atoi(num);
+        uint8_t r = syncConfig();
+        return r
+    }
+    return CALL_FAILED;
+}
+
+standard_retval handleChannelCmd(char* t, char* d){
+
+    char* chan = (char*)(d+5);
+    uint8_t len = strlen((char*)(d+5));
+    if(len > 0 && len < 32){
+        unsubscribe();
+        memset(&(NonVolatileConfig.channelBase[0]), 0, 32);
+        strncpy(&(NonVolatileConfig.channelBase[0]), t, len);
+        strncat(&(NonVolatileConfig.channelBase[0]), "/%s", 3);
+        uint8_t r = syncConfig();
+        return r;
+    }
+    return CALL_FAILED;
+}
+
+standard_retval initConfigCommands(){
+    int8_t ret = CALL_OK;
+    ret += addCommand("locate",    &handleLocateCmd);
+    ret += addCommand("interval",  &handleIntervalCmd);
+    ret += addCommand("batint",    &handleBatIntCmd);
+    ret += addCommand("channel",   &handleChannelCmd);
+
+    if(ret != CALL_OK)
+        return CALL_FAILED;
+
+    return CALL_OK;
+}
+
+
+
 
 /*---------------------------------------------------------------------------*/
 static void echo_reply_handler(uip_ipaddr_t *source, uint8_t ttl, uint8_t *data, uint16_t datalen) {
@@ -373,50 +438,8 @@ standard_retval MQTTTasks(process_event_t ev,  process_data_t data){
 
           LOG_DBG("Received MQTT command\n");
 
-          if(strncmp((char*)data, "locate", 6) == 0) {
-              etimer_set(&resetLED_timer, (CLOCK_SECOND * 5));
-              leds_on(LEDS_BLUE);
-          }
+          handleCommand("config",(char*)data);
 
-          if(strncmp((char*)data, "interval", 8) == 0) {
-              char* num = (char*)(data+9);
-              uint8_t len = strlen((char*)(data+9));
-              if(len > 0 ){
-                  NonVolatileConfig.datasendInterval = atoi(num);
-                  uint8_t r = syncConfig();
-                  if(r == CALL_OK){
-                      etimer_set(&resetLED_timer, (CLOCK_SECOND * 1));
-                      leds_on(LEDS_BLUE);
-                  }
-              }
-          }
-          if(strncmp((char*)data, "batint", 6) == 0) {
-            char* num = (char*)(data+7);
-            uint8_t len = strlen((char*)(data+7));
-            if(len > 0 ){
-                NonVolatileConfig.batterySendInterval = atoi(num);
-                uint8_t r = syncConfig();
-                if(r == CALL_OK){
-                    etimer_set(&resetLED_timer, (CLOCK_SECOND * 1));
-                    leds_on(LEDS_BLUE);
-                }
-            }
-          }
-          if(strncmp((char*)data, "chan", 4) == 0) {
-              char* chan = (char*)(data+5);
-              uint8_t len = strlen((char*)(data+5));
-              if(len > 0 && len < 32){
-                  unsubscribe();
-                  memset(&(NonVolatileConfig.channelBase[0]), 0, 32);
-                  strncpy(&(NonVolatileConfig.channelBase[0]), chan, len);
-                  strncat(&(NonVolatileConfig.channelBase[0]), "/%s", 3);
-                  uint8_t r = syncConfig();
-                  if(r == CALL_OK){
-                      etimer_set(&resetLED_timer, (CLOCK_SECOND * 1));
-                      leds_on(LEDS_BLUE);
-                  }
-              }
-          }
       }
     if(ev == PROCESS_EVENT_TIMER && data == &resetLED_timer) {
         leds_off(LEDS_BLUE);

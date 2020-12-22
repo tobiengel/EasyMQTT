@@ -16,6 +16,7 @@ extern process_event_t mqtt_command_event;
 
 #define BUFFER_SIZE 64
 
+
 typedef enum ConnectionStatus_e {
     ConnectionPending,
     ConnectionReady
@@ -80,12 +81,9 @@ typedef struct mqtt_client_config {
 /*---------------------------------------------------------------------------*/
 /* A timeout used when waiting to connect to a network */
 #define NET_CONNECT_PERIODIC        (CLOCK_SECOND >> 2)
-#define NO_NET_LED_DURATION         (NET_CONNECT_PERIODIC >> 1)
+
 /*---------------------------------------------------------------------------*/
 /* Default configuration values */
-
-
-#define DEFAULT_KEEP_ALIVE_TIMER    60
 #define DEFAULT_RSSI_MEAS_INTERVAL  (CLOCK_SECOND * 300)
 #define DEFAULT_PUBLISH_INTERVAL    (30 * CLOCK_SECOND)
 /*---------------------------------------------------------------------------*/

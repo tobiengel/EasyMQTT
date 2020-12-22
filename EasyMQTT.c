@@ -44,6 +44,7 @@ void ReceiveData(char* topic, char* data){
 
 /*---------------------------------------------------------------------------*/
 PROCESS_THREAD(easymqtt_process, ev, data) {
+
     standard_retval r = CALL_OK;
 
     PROCESS_BEGIN();
@@ -79,11 +80,8 @@ PROCESS_THREAD(easymqtt_process, ev, data) {
           etimer_set(&data_send_timer, (CLOCK_SECOND * NonVolatileConfig.datasendInterval));
       }
 
-
-
-
       if(ev == PROCESS_EVENT_TIMER && data == &batmon_timer) {
-          if(isConnectionReady()) {
+          if(isConnectionReady()) {6
               int value = batmon_sensor.value(BATMON_SENSOR_TYPE_VOLT);
               value = (value * 125) >> 5;
               LOG_DBG("Bat: Volt=%d mV\n", value);
