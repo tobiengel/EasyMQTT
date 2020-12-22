@@ -14,13 +14,13 @@ MODULES += $(CONTIKI_NG_APP_LAYER_DIR)/mqtt
 MODULES += $(CONTIKI_NG_STORAGE_DIR)/cfs
 MODULES_REL += arch/platform/$(TARGET)
 
-PROJECT_SOURCEFILES += mqttWrapper.c storage.c
+PROJECT_SOURCEFILES += mqttWrapper.c storage.c CommandHandler.c
 
 -include $(CONTIKI)/Makefile.identify-target
 
 PLATFORMS_ONLY = simplelink
 
 include $(CONTIKI)/Makefile.include
-EasyMQTT.$(TARGET):  $(OBJECTDIR)/mqttWrapper.o $(OBJECTDIR)/storage.o
+EasyMQTT.$(TARGET):  $(OBJECTDIR)/mqttWrapper.o $(OBJECTDIR)/storage.o $(OBJECTDIR)/CommandHandler.o
 
 

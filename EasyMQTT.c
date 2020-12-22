@@ -81,7 +81,7 @@ PROCESS_THREAD(easymqtt_process, ev, data) {
       }
 
       if(ev == PROCESS_EVENT_TIMER && data == &batmon_timer) {
-          if(isConnectionReady()) {6
+          if(isConnectionReady()) {
               int value = batmon_sensor.value(BATMON_SENSOR_TYPE_VOLT);
               value = (value * 125) >> 5;
               LOG_DBG("Bat: Volt=%d mV\n", value);

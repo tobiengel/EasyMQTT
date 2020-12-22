@@ -14,12 +14,12 @@
 #define MAX_COMMANDS 5 //defines how many commands are checked
 typedef standard_retval (*CmdHandler)(char*, char*);
 
-typedef struct ConfigCommandHandler {
+typedef struct ConfigCommand_s {
     char command[MAX_COMMAND_SIZE];
     CmdHandler handler;
 } ConfigCommand;
 
-ConfigCommandHandler commands[MAX_COMMANDS];
+extern ConfigCommand commands[MAX_COMMANDS];
 
 
 standard_retval addCommand(char*, CmdHandler);

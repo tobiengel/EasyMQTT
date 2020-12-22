@@ -67,8 +67,8 @@ standard_retval handleLocateCmd(char* t, char* d){
 
 standard_retval handleIntervalCmd(char* t, char* d){
 
-    char* num = (char*)(data+9);
-    uint8_t len = strlen((char*)(data+9));
+    char* num = (char*)(d+9);
+    uint8_t len = strlen((char*)(d+9));
 
     if(len > 0 ){
         NonVolatileConfig.datasendInterval = atoi(num);
@@ -83,22 +83,21 @@ standard_retval handleBatIntCmd(char* t, char* d){
     char* num = (char*)(d+7);
     uint8_t len = strlen((char*)(d+7));
     if(len > 0 ){
-
         NonVolatileConfig.batterySendInterval = atoi(num);
         uint8_t r = syncConfig();
-        return r
+        return r;
     }
     return CALL_FAILED;
 }
 
 standard_retval handleChannelCmd(char* t, char* d){
 
-    char* chan = (char*)(d+5);
-    uint8_t len = strlen((char*)(d+5));
+    char* chan = (char*)(d+7);
+    uint8_t len = strlen((char*)(d+7));
     if(len > 0 && len < 32){
         unsubscribe();
         memset(&(NonVolatileConfig.channelBase[0]), 0, 32);
-        strncpy(&(NonVolatileConfig.channelBase[0]), t, len);
+        strncpy(&(NonVolatileConfig.channelBase[0]), chan, len);
         strncat(&(NonVolatileConfig.channelBase[0]), "/%s", 3);
         uint8_t r = syncConfig();
         return r;
@@ -118,8 +117,6 @@ standard_retval initConfigCommands(){
 
     return CALL_OK;
 }
-
-
 
 
 /*---------------------------------------------------------------------------*/

@@ -8,6 +8,11 @@
 
 #include "CommandHandler.h"
 #include <contiki.h>
+#include <board.h>
+#include <string.h>
+#include <os/dev/leds.h>
+
+ConfigCommand commands[MAX_COMMANDS];
 
 extern struct etimer resetLED_timer;
 static uint8_t maxCommand = 0;
@@ -21,7 +26,7 @@ standard_retval addCommand(char* c, CmdHandler handler){
 
     maxCommand++;
 
-    commands[maxCommand].command = c;
+    strncpy(commands[maxCommand].command,c, strlen(c));
     commands[maxCommand].handler = handler;
     return CALL_OK;
 }
