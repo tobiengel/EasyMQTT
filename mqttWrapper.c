@@ -377,6 +377,8 @@ standard_retval initMQTT(struct process *process, RcvHandler handler){
     rcvHandler = handler;
     main_process = process;
 
+    initConfigCommands();
+
     /* Populate configuration with default values */
     memset(&conf, 0, sizeof(mqtt_client_config_t));
 
@@ -434,12 +436,10 @@ standard_retval MQTTTasks(process_event_t ev,  process_data_t data){
     if( ev == mqtt_command_event ) {
 
           LOG_DBG("Received MQTT command\n");
-
           handleCommand("config",(char*)data);
-
       }
     if(ev == PROCESS_EVENT_TIMER && data == &resetLED_timer) {
-        leds_off(LEDS_BLUE);
+        leds_off(LEDS_ALL);
     }
     return CALL_OK;
 }
