@@ -11,7 +11,7 @@
 #include "returnTypes.h"
 
 #define MAX_COMMAND_SIZE 12 //defines how many characters a command can have
-#define MAX_COMMANDS 5 //defines how many commands are checked
+#define MAX_COMMANDS 6 //defines how many commands are checked
 typedef standard_retval (*CmdHandler)(char*, char*);
 
 typedef struct ConfigCommand_s {

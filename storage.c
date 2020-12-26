@@ -29,6 +29,11 @@ void listFiles(){
     }
 }
 
+standard_retval formatStorage() {
+    cfs_coffee_format();
+    return CALL_OK;
+}
+
 standard_retval createDefaultConfig(){
 
     sprintf(NonVolatileConfig.channelBase, "default/%%s");
@@ -40,33 +45,37 @@ standard_retval createDefaultConfig(){
 
 
 static void EnsureConfig(){
-
+    standard_retval r = CALL_FAILED;
     memset(&NonVolatileConfig, 0, sizeof(NonVolatileConfig));
 
     int hd = cfs_open(configDataFile, CFS_READ);
     if(hd < 0){ //couldnt open config file
         LOG_DBG("No config file. Creating\n");
         cfs_close(hd);
-        LOG_DBG("Formatting cfs\n");
-        if(cfs_coffee_format() == CALL_OK)
-            LOG_DBG("Sucessful\n");
-        else
-            LOG_DBG("Failed\n");
+//        LOG_DBG("Formatting cfs\n");
+//        if(cfs_coffee_format() == CALL_OK)
+//            LOG_DBG("Sucessful\n");
+//        else
+//            LOG_DBG("Failed\n");
         createDefaultConfig();
-        syncConfig();
+        r = syncConfig();
+        if(r != CALL_OK)
+            LOG_DBG("Failed to write Config data completely\n");
 
     } else {
         int read = cfs_read(hd, &NonVolatileConfig, sizeof(NonVolatileConfig));
         if(read != sizeof(NonVolatileConfig)){
             cfs_close(hd);
-            printf("Formatting cfs\n");
-            if(cfs_coffee_format() == CALL_OK)
-                printf("Sucessful\n");
-            else
-                printf("Failed\n");
-            printf("Config struct changed\n");
+//            printf("Formatting cfs\n");
+//            if(cfs_coffee_format() == CALL_OK)
+//                printf("Sucessful\n");
+//            else
+//                printf("Failed\n");
+//            printf("Config struct changed\n");
             createDefaultConfig();
-            syncConfig();
+            r = syncConfig();
+            if(r != CALL_OK)
+                LOG_DBG("Failed to write Config data completely\n");
         } else { //here we now have a NonVolatileConfig struct
 
         }
@@ -86,8 +95,8 @@ standard_retval initStorage(){
     #endif
 
    listFiles();
-//   EnsureConfig();
-   createDefaultConfig();
+   EnsureConfig();
+   //createDefaultConfig();
 
 
     //ensure channel config is correct

@@ -80,7 +80,8 @@ typedef struct mqtt_client_config {
 
 /*---------------------------------------------------------------------------*/
 /* A timeout used when waiting to connect to a network */
-#define NET_CONNECT_PERIODIC        (CLOCK_SECOND >> 2)
+//#define NET_CONNECT_PERIODIC        (CLOCK_SECOND >> 2)
+#define NET_CONNECT_PERIODIC        (CLOCK_SECOND >> 1)
 
 /*---------------------------------------------------------------------------*/
 /* Default configuration values */

@@ -58,6 +58,11 @@ struct etimer publish_periodic_timer;
 
 char client_id[BUFFER_SIZE];
 
+standard_retval handleFormatCmd(char* t, char* d){
+    formatStorage();
+    return CALL_OK;
+}
+
 standard_retval handleLocateCmd(char* t, char* d){
 
     etimer_set(&resetLED_timer, (CLOCK_SECOND * 5));    //handle the LED ourselves
@@ -111,6 +116,7 @@ standard_retval initConfigCommands(){
     ret += addCommand("interval",  &handleIntervalCmd);
     ret += addCommand("batint",    &handleBatIntCmd);
     ret += addCommand("channel",   &handleChannelCmd);
+    ret += addCommand("format",    &handleFormatCmd);
 
     if(ret != CALL_OK)
         return CALL_FAILED;
@@ -132,7 +138,8 @@ static void echo_reply_handler(uip_ipaddr_t *source, uint8_t ttl, uint8_t *data,
 static void connect_to_broker(void) {
 
     LOG_DBG("Connect to broker\n");
-    mqtt_status_t r = mqtt_connect(&conn, conf.broker_ip, conf.broker_port, (conf.pub_interval * 3) / CLOCK_SECOND, MQTT_CLEAN_SESSION_OFF);
+   // mqtt_status_t r = mqtt_connect(&conn, conf.broker_ip, conf.broker_port, (conf.pub_interval * 3) / CLOCK_SECOND, MQTT_CLEAN_SESSION_OFF);
+    mqtt_status_t r = mqtt_connect(&conn, conf.broker_ip, conf.broker_port, 900 *  CLOCK_SECOND, MQTT_CLEAN_SESSION_OFF);
     if(r!=MQTT_STATUS_OK)
         LOG_DBG("Error connecting: %d \n", r);
 

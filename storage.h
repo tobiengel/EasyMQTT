@@ -16,5 +16,5 @@ extern configData NonVolatileConfig;
 void listFiles();
 standard_retval syncConfig();
 standard_retval initStorage();
-
+standard_retval formatStorage();
 #endif /* STORAGE_STORAGE_H_ */

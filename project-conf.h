@@ -13,4 +13,6 @@
 
 #define LOG_CONF_LEVEL_IPV6 LOG_LEVEL_WARN
 
+#define RPL_CONF_DIS_INTERVAL 5
+
 #endif /* PROJECT_CONF_H_ */
