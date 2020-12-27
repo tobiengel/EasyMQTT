@@ -58,8 +58,21 @@ struct etimer publish_periodic_timer;
 
 char client_id[BUFFER_SIZE];
 
-standard_retval handleFormatCmd(char* t, char* d){
-    formatStorage();
+standard_retval handleHelpCmd(char* t, char* d){
+    char buf[MAX_COMMAND_SIZE * MAX_COMMANDS];
+
+    for(int i = 0; i < MAX_COMMANDS - 1; i++){
+        if(commands[i].command != NULL) {
+            strncat(buf, commands[i].command, sizeof(commands[i].command));
+            strncat(buf, " - ", 3);
+        }
+    }
+    if(commands[MAX_COMMANDS - 1].command != NULL) {
+        strncat(buf, commands[MAX_COMMANDS - 1].command, sizeof(commands[MAX_COMMANDS - 1].command));
+    }
+
+
+    publishStr("default/help", buf);
     return CALL_OK;
 }
 
@@ -116,7 +129,7 @@ standard_retval initConfigCommands(){
     ret += addCommand("interval",  &handleIntervalCmd);
     ret += addCommand("batint",    &handleBatIntCmd);
     ret += addCommand("channel",   &handleChannelCmd);
-    ret += addCommand("format",    &handleFormatCmd);
+    ret += addCommand("help",    &handleHelpCmd);
 
     if(ret != CALL_OK)
         return CALL_FAILED;

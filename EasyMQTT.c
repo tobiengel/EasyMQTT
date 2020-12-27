@@ -5,6 +5,7 @@
 
 #include <os/lib/sensors.h> //include the sensor interface
 #include <batmon-sensor.h>  //include the batmon specific sensor implementation
+#include <ICM20948.h>
 
 #include <mqttWrapper.h>
 #include <storage.h>
@@ -57,7 +58,8 @@ PROCESS_THREAD(easymqtt_process, ev, data) {
     etimer_set(&batmon_timer,  (CLOCK_SECOND * NonVolatileConfig.batterySendInterval));     //set timer for battery value sending
     etimer_set(&resetLED_timer,  (CLOCK_SECOND * 5));                                       //set timer to shut down LEDs
 
-    SENSORS_ACTIVATE(batmon_sensor);                                                        //activate battery monitor
+    SENSORS_ACTIVATE(batmon_sensor);   //activate battery monitor
+  //  SENSORS_ACTIVATE(ICM20948_sensor);
 
     /* Main loop */
     while(1) {

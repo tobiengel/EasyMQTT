@@ -64,21 +64,21 @@ static void EnsureConfig(){
 
     } else {
         int read = cfs_read(hd, &NonVolatileConfig, sizeof(NonVolatileConfig));
-        if(read != sizeof(NonVolatileConfig)){
-            cfs_close(hd);
-//            printf("Formatting cfs\n");
-//            if(cfs_coffee_format() == CALL_OK)
-//                printf("Sucessful\n");
-//            else
-//                printf("Failed\n");
-//            printf("Config struct changed\n");
-            createDefaultConfig();
-            r = syncConfig();
-            if(r != CALL_OK)
-                LOG_DBG("Failed to write Config data completely\n");
-        } else { //here we now have a NonVolatileConfig struct
-
-        }
+//        if(read != sizeof(NonVolatileConfig)){
+//            cfs_close(hd);
+////            printf("Formatting cfs\n");
+////            if(cfs_coffee_format() == CALL_OK)
+////                printf("Sucessful\n");
+////            else
+////                printf("Failed\n");
+////            printf("Config struct changed\n");
+//            createDefaultConfig();
+//            r = syncConfig();
+//            if(r != CALL_OK)
+//                LOG_DBG("Failed to write Config data completely\n");
+//        } else { //here we now have a NonVolatileConfig struct
+//
+//        }
     }
     cfs_close(hd);
 
@@ -112,7 +112,9 @@ standard_retval initStorage(){
 
 standard_retval syncConfig(){
     int len = sizeof(NonVolatileConfig);
-    int hd = cfs_open(configDataFile, CFS_WRITE);
+    int hd = cfs_open(configDataFile, CFS_READ | CFS_WRITE);
+
+    LOG_DBG("Sync file with size: %d", len);
     int n = cfs_write(hd, &NonVolatileConfig, len);
 
     cfs_close(hd);
