@@ -12,7 +12,7 @@
 #include <cfs/cfs-coffee.h>
 
 #include <os/sys/log.h>
-#define LOG_LEVEL LOG_LEVEL_DBG
+#define LOG_LEVEL LOG_LEVEL_NONE
 #define LOG_MODULE "Storage"
 
 configData NonVolatileConfig;
@@ -48,7 +48,8 @@ static void EnsureConfig(){
     standard_retval r = CALL_FAILED;
     memset(&NonVolatileConfig, 0, sizeof(NonVolatileConfig));
 
-    int hd = cfs_open(configDataFile, CFS_READ);
+    int hd = -1;
+    hd = cfs_open(configDataFile, CFS_READ);
     if(hd < 0){ //couldnt open config file
         LOG_DBG("No config file. Creating\n");
         cfs_close(hd);

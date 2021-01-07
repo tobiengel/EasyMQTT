@@ -14,7 +14,7 @@ MODULES += $(CONTIKI_NG_APP_LAYER_DIR)/mqtt
 MODULES += $(CONTIKI_NG_STORAGE_DIR)/cfs
 MODULES_REL += arch/platform/$(TARGET)
 
-PROJECT_SOURCEFILES += mqttWrapper.c storage.c CommandHandler.c
+PROJECT_SOURCEFILES += mqttWrapper.c storage.c CommandHandler.c utilities.c
 
 -include $(CONTIKI)/Makefile.identify-target
 

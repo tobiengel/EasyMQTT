@@ -11,7 +11,7 @@
 
 #define configDataFile "config"
 #define configBatInterval 30
-#define configDataSendInterval 30
+#define configDataSendInterval 300
 
 
 typedef struct {

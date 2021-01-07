@@ -22,7 +22,7 @@
 #include "CommandHandler.h"     //handles received commands
 
 #include <os/sys/log.h>
-#define LOG_LEVEL LOG_LEVEL_DBG
+#define LOG_LEVEL LOG_LEVEL_NONE
 #define LOG_MODULE "mqttWrapper"
 
 /* Parent RSSI functionality */
@@ -110,8 +110,8 @@ standard_retval handleBatIntCmd(char* t, char* d){
 
 standard_retval handleChannelCmd(char* t, char* d){
 
-    char* chan = (char*)(d+7);
-    uint8_t len = strlen((char*)(d+7));
+    char* chan = (char*)(d+8);
+    uint8_t len = strlen((char*)(d+8));
     if(len > 0 && len < 32){
         unsubscribe();
         memset(&(NonVolatileConfig.channelBase[0]), 0, 32);
@@ -445,10 +445,12 @@ standard_retval initMQTT(struct process *process, RcvHandler handler){
 standard_retval MQTTTasks(process_event_t ev,  process_data_t data){
 
     if((ev == PROCESS_EVENT_TIMER && data == &publish_periodic_timer) || ev == PROCESS_EVENT_POLL ) {
+        LOG_DBG("Handle state_machine\n");
         state_machine();
     }
 
     if(ev == PROCESS_EVENT_TIMER && data == &echo_request_timer) {
+        LOG_DBG("Ping parent\n");
         ping_parent();
         etimer_set(&echo_request_timer, conf.def_rt_ping_interval);
     }
@@ -459,6 +461,7 @@ standard_retval MQTTTasks(process_event_t ev,  process_data_t data){
           handleCommand("config",(char*)data);
       }
     if(ev == PROCESS_EVENT_TIMER && data == &resetLED_timer) {
+        LOG_DBG("LED off\n");
         leds_off(LEDS_ALL);
     }
     return CALL_OK;
